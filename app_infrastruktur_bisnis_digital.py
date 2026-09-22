@@ -165,22 +165,61 @@ quiz = [
 ]
 
 flows = {
-    "Toko Online": [
-        "Pelanggan", "Website / Mobile App", "Internet", "Server / Cloud",
-        "Database", "Payment Gateway", "Inventory", "Logistics"
-    ],
-    "Coffee Shop": [
-        "Pelanggan", "Aplikasi / QR Menu", "Internet", "Server / Cloud",
-        "Database", "Payment", "POS", "Kitchen / Barista"
-    ],
-    "Laundry Digital": [
-        "Pelanggan", "Aplikasi", "Internet", "Server / Cloud",
-        "Database", "Payment", "Pickup & Delivery", "Status Laundry"
-    ],
-    "Restoran": [
-        "Pelanggan", "Aplikasi / Website", "Order System", "Payment",
-        "Kitchen", "Inventory", "Delivery / Pickup"
-    ],
+    "Coffee Shop Digital": {
+        "case": (
+            "Coffee shop mengalami antrean panjang pada jam sibuk. Pelanggan ingin bisa melihat menu, "
+            "memesan, dan membayar melalui QR tanpa harus mengantre lama di kasir."
+        ),
+        "steps": [
+            "Pelanggan", "QR Menu / Mobile Web", "Internet", "Cloud / Server",
+            "Database", "Payment API / POS / Inventory", "Kitchen / Barista", "Pelanggan"
+        ],
+        "focus": "Integrasi order, pembayaran, POS, stok, dan proses pembuatan minuman."
+    },
+    "Laundry Digital": {
+        "case": (
+            "Laundry ingin menyediakan layanan pickup dan delivery. Pelanggan juga ingin mengetahui "
+            "status cucian secara online, mulai dari dijemput, dicuci, disetrika, hingga dikirim kembali."
+        ),
+        "steps": [
+            "Pelanggan", "Mobile App / Website", "Internet", "Cloud / Server",
+            "Database", "Payment / Pickup / Delivery API", "Laundry Process", "Pelanggan"
+        ],
+        "focus": "Tracking status, pembayaran digital, dan integrasi pickup-delivery."
+    },
+    "Marketplace / Toko Online": {
+        "case": (
+            "Bisnis fashion yang awalnya hanya memiliki toko fisik ingin menjual produk secara nasional. "
+            "Sistem harus menangani pencarian produk, checkout, pembayaran, stok, dan pengiriman."
+        ),
+        "steps": [
+            "Customer", "Website / Mobile App", "Internet", "Cloud / Server",
+            "Database", "Payment / Inventory / Logistics API", "Warehouse / Fulfillment", "Customer"
+        ],
+        "focus": "Sinkronisasi stok, pembayaran, warehouse, dan logistik."
+    },
+    "Kursus Online": {
+        "case": (
+            "Lembaga kursus ingin mengubah kelas tatap muka menjadi platform digital. Mahasiswa dapat "
+            "mendaftar, membayar, menonton materi, mengerjakan kuis, melihat progres, dan memperoleh sertifikat."
+        ),
+        "steps": [
+            "Student", "Learning App / Website", "Internet", "Cloud / Server",
+            "Database", "Payment / Video / Learning System", "Learning Process", "Student"
+        ],
+        "focus": "Autentikasi, penyimpanan materi, progres belajar, pembayaran, dan sertifikat."
+    },
+    "Restoran Digital": {
+        "case": (
+            "Restoran menerima pesanan dari dine-in, website, dan layanan delivery. Masalah muncul ketika "
+            "stok, pembayaran, dan order dapur tidak sinkron."
+        ),
+        "steps": [
+            "Customer", "Website / App / QR Menu", "Internet", "Cloud / Server",
+            "Database", "Payment / POS / Inventory", "Kitchen / Delivery", "Customer"
+        ],
+        "focus": "Integrasi order, POS, inventory, kitchen, payment, dan delivery."
+    },
 }
 
 # -----------------------------
@@ -195,6 +234,7 @@ menu = st.sidebar.radio(
         "🏠 Beranda",
         "📘 Materi",
         "🔗 Simulasi Infrastruktur",
+        "🧭 5 Contoh Alur",
         "🧩 Latihan",
         "🏆 Kuis 10 Soal",
         "✅ Ringkasan",
@@ -234,7 +274,7 @@ if menu == "🏠 Beranda":
         st.markdown("""
         <div class="small-card">
         <b>🧠 Metode</b><br><br>
-        Materi ringkas, contoh kasus, simulasi, latihan, dan kuis.
+        Materi ringkas, 5 contoh alur bisnis, simulasi, latihan, dan kuis.
         </div>
         """, unsafe_allow_html=True)
     with c3:
@@ -458,13 +498,16 @@ elif menu == "📘 Materi":
 elif menu == "🔗 Simulasi Infrastruktur":
     st.subheader("Simulasi Alur Infrastruktur")
     business = st.selectbox("Pilih jenis bisnis", list(flows.keys()))
-    steps = flows[business]
+    selected = flows[business]
+    steps = selected["steps"]
 
+    st.write(f"**Kasus:** {selected['case']}")
     st.write(f"Contoh alur sederhana untuk **{business}**:")
     st.markdown(
         '<div class="flow">' + " → ".join(steps) + '</div>',
         unsafe_allow_html=True
     )
+    st.caption(f"Fokus infrastruktur: {selected['focus']}")
 
     st.markdown("### Coba analisis")
     problem = st.selectbox(
@@ -488,6 +531,81 @@ elif menu == "🔗 Simulasi Infrastruktur":
         st.error("Fokus analisis: security, access control, authentication, encryption, dan prosedur perlindungan data.")
     else:
         st.info("Fokus analisis: network availability dan konektivitas antara perangkat, aplikasi, dan layanan online.")
+
+# -----------------------------
+# 5 CONTOH ALUR
+# -----------------------------
+elif menu == "🧭 5 Contoh Alur":
+    st.subheader("5 Contoh Alur Infrastruktur Bisnis Digital")
+    st.write(
+        "Walaupun jenis bisnis berbeda, pola infrastrukturnya umumnya mirip. "
+        "Perbedaannya terutama terletak pada aplikasi, integrasi, dan proses bisnis akhirnya."
+    )
+
+    st.markdown("### Pola umum")
+    st.markdown("""
+    <div class="flow">
+    Customer / User → Application → Internet → Cloud / Server → Database → Integration / API → Business Process → Customer / User
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.info(
+        "Cara membacanya: pengguna berinteraksi melalui aplikasi, terhubung lewat internet, "
+        "permintaan diproses di server/cloud, data disimpan di database, lalu sistem terhubung "
+        "dengan layanan lain melalui integrasi/API sebelum proses bisnis dijalankan."
+    )
+
+    for i, (name, info) in enumerate(flows.items(), start=1):
+        with st.expander(f"{i}. {name}", expanded=(i == 1)):
+            st.markdown("**Gambaran kasus**")
+            st.write(info["case"])
+
+            st.markdown("**Alur infrastruktur digital**")
+            st.markdown(
+                '<div class="flow">' + " → ".join(info["steps"]) + '</div>',
+                unsafe_allow_html=True
+            )
+
+            st.markdown("**Fokus yang perlu diperhatikan**")
+            st.write(info["focus"])
+
+            if name == "Coffee Shop Digital":
+                st.caption(
+                    "Contoh: setelah pelanggan memesan dan membayar, transaksi masuk ke POS, "
+                    "stok dapat diperbarui, dan barista menerima order."
+                )
+            elif name == "Laundry Digital":
+                st.caption(
+                    "Contoh: status laundry diperbarui di sistem sehingga pelanggan bisa melihat "
+                    "apakah cucian sedang diproses, selesai, atau dalam pengiriman."
+                )
+            elif name == "Marketplace / Toko Online":
+                st.caption(
+                    "Contoh: pembayaran yang berhasil memicu pengurangan stok dan proses fulfillment, "
+                    "kemudian data pengiriman diteruskan ke layanan logistik."
+                )
+            elif name == "Kursus Online":
+                st.caption(
+                    "Contoh: setelah pembayaran berhasil, akses kelas dibuka dan progres belajar "
+                    "disimpan di database sampai sertifikat diterbitkan."
+                )
+            elif name == "Restoran Digital":
+                st.caption(
+                    "Contoh: order yang masuk harus sinkron dengan POS, inventory, dapur, dan delivery "
+                    "agar tidak terjadi pesanan ganda atau stok yang tidak sesuai."
+                )
+
+    st.divider()
+    st.markdown("### Apa yang sama dari kelima kasus?")
+    st.markdown("""
+    - Semua memiliki **user/customer** sebagai titik awal.
+    - Semua membutuhkan **application** sebagai media interaksi.
+    - Semua bergantung pada **network/internet**.
+    - Semua membutuhkan **server/cloud** untuk menjalankan proses.
+    - Semua menyimpan data di **database**.
+    - Semua membutuhkan **integrasi** dengan sistem lain.
+    - Semua berakhir pada **proses bisnis nyata** yang memberi value kepada pengguna.
+    """)
 
 # -----------------------------
 # LATIHAN
